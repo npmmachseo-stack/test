@@ -1,0 +1,67 @@
+name: Build All APKs
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-phone:
+    name: Android Phone APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Build
+        working-directory: android-app
+        run: |
+          gradle wrapper --gradle-version 7.5.1
+          chmod +x gradlew
+          ./gradlew assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BTKeyboardSender
+          path: android-app/app/build/outputs/apk/debug/*.apk
+
+  build-android-tv:
+    name: Android TV APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Build
+        working-directory: tv-apps/android-tv
+        run: |
+          gradle wrapper --gradle-version 7.5.1
+          chmod +x gradlew
+          ./gradlew assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BTKeyboardTV
+          path: tv-apps/android-tv/app/build/outputs/apk/debug/*.apk
+
+  build-fire-tv:
+    name: Fire TV APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Build
+        working-directory: tv-apps/amazon-firetv
+        run: |
+          gradle wrapper --gradle-version 7.5.1
+          chmod +x gradlew
+          ./gradlew assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BTKeyboardFireTV
+          path: tv-apps/amazon-firetv/app/build/outputs/apk/debug/*.apk
